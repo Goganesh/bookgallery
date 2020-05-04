@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>List of all genres</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        .persons, .persons td {
+            border: 1px solid lightgray;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<p>
+    <a th:href="@{/books}" th:text="#{button.allBooks}" method="get" href="books.html">Get all books</a> </br>
+    <a th:href="@{/genre}" th:text="#{button.createGenre}" th:method="get" href="genre.html">Create genre</a> </br>
+</p>
+
+<h1 th:text="#{genres.title}">Genres:</h1>
+
+<table class="genres">
+    <thead>
+    <tr>
+        <th th:text="#{genres.table.id}">ID</th>
+        <th th:text="#{genres.table.name}">Name</th>
+        <th></th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="genre : ${genres}">
+        <td th:text="${genre.id}">1</td>
+        <td th:text="${genre.name}">Alexandre Dumas</td>
+        <td>
+            <button th:with="url = @{/genre/{id}(id=${genre.id})}" th:onclick="sendEdit([[${url}]])" th:text="#{table.button.edit}">Edit</button>
+        </td>
+        <td>
+            <button th:with="url = @{/genre/{id}(id=${genre.id})}" th:onclick="sendDelete([[${url}]])" th:text="#{table.button.delete}">Delete</button>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+<div>
+    <p th:text="#{lang.change}">Language:</p>
+    <a th:text="#{lang.eng}" href="?lang=en_EN">English</a>
+    <a th:text="#{lang.rus}" href="?lang=ru_RU">Russia</a>
+</div>
+
+<script src="/static/asa.js"></script>
+</body>
+</html>
