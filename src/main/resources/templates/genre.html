@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Edit genre</title>
+    <style type="text/css">
+        body {
+            padding: 50px;
+        }
+
+        label {
+            display: inline-block;
+            width: 100px;
+        }
+
+        input:read-only {
+            background: lightgray;
+        }
+
+        .row {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<p>
+    <a th:href="@{/genres}" th:text="#{button.allGenres}" method="get" href="genres.html">Get all genres</a>
+</p>
+<!-- Genre edition -->
+<form id="edit-form" th:action="@{/genre(id=${genre.id})}" th:method="post" action="genres.html">
+
+    <h1 th:text="#{genre.title}">Genre Info:</h1>
+
+    <div class="row">
+        <label for="id-input" th:text="#{author.form.id}">ID:</label>
+        <input id="id-input" type="text" readonly="readonly" th:value="${genre.id}" value="1"/>
+    </div>
+
+    <div class="row">
+        <label for="name-input" th:text="#{author.form.name}">Name:</label>
+        <input id="name-input" name="name" type="text" th:value="${genre.name}" value="Alexandre Dumas" required/>
+    </div>
+
+    <div class="row">
+        <button type="submit">Save</button>
+    </div>
+</form>
+
+<div>
+    <p th:text="#{lang.change}">Language:</p>
+    <a th:text="#{lang.eng}" href="?lang=en_EN">English</a>
+    <a th:text="#{lang.rus}" href="?lang=ru_RU">Russia</a>
+</div>
+
+</body>
+</html>
