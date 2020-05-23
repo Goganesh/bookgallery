@@ -17,9 +17,4 @@ spring:
 logging:
     level:
         ROOT: INFO
-locale:
-    defaultLocaleLanguage: ru
-    defaultLocaleCountry: RU
-    localeClasspath: classpath:/i18n/messages
-    defaultEncoding: UTF-8
 

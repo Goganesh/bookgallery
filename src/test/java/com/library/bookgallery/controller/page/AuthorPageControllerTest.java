@@ -1,5 +1,6 @@
-package com.library.bookgallery.controller;
+package com.library.bookgallery.controller.page;
 
+import com.library.bookgallery.controller.page.AuthorPageController;
 import com.library.bookgallery.domain.Author;
 import com.library.bookgallery.service.AuthorService;
 import org.junit.jupiter.api.DisplayName;
@@ -8,16 +9,15 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.ArrayList;
 import java.util.List;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@DisplayName("Controller для работы с авторами")
-@WebMvcTest(AuthorController.class)
-class AuthorControllerTest {
+@DisplayName("PageController для работы с авторами")
+@WebMvcTest(AuthorPageController.class)
+class AuthorPageControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -31,7 +31,7 @@ class AuthorControllerTest {
         Mockito.when(authorService.findById(1)).thenReturn(new Author(1, "Alexandre Dumas"));
 
         this.mvc.perform(MockMvcRequestBuilders
-                .get("/author/1"))
+                .get("/authors/1"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("author"));
     }

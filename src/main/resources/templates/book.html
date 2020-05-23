@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8"/>
     <title>Edit book</title>
@@ -25,54 +25,48 @@
 <body>
 
 <p>
-    <a th:href="@{/books}" th:text="#{button.allBooks}" method="get" href="authors.html">Get all books</a> </br>
+    <a method="get" href="/authors">Get all books</a> </br>
 </p>
 <!-- Book edition -->
-<form id="edit-form" th:action="@{/book}" method="post" action="books.html">
+<form id="edit-form" action="/books" method="post">
 
-    <h1 th:text="#{book.title}">Book Info:</h1>
+    <h1>Book Info:</h1>
 
     <div class="row">
-        <label for="id-input" th:text="#{book.form.id}">ID:</label>
-        <input id="id-input" name="id" type="text" readonly="readonly" th:value="${book.id}" value="1"/>
+        <label for="id-input">ID:</label>
+        <input id="id-input" name="id" type="text" readonly="readonly" value="-1"/>
     </div>
 
     <div class="row">
-        <label for="name-input" th:text="#{book.form.name}">Name:</label>
-        <input id="name-input" name="name" type="text" th:value="${book.name}" value="The Three Musketeers" required/>
+        <label for="name-input">Name:</label>
+        <input id="name-input" name="name" type="text" required/>
     </div>
 
     <div class="row">
-        <label for="author-input" th:text="#{book.form.author}">Author:</label>
-        <select form="edit-form" id = "author-input" th:name="author" required>
-            <option th:each="authorDto : ${authors}"
-                    th:value="${authorDto.id}"
-                    th:selected="${authorDto.equals(book.authorDto)}"
-                    th:text="${authorDto.name}">Alexandre Dumas</option>
-        </select>
+        <label for="author-input">Author:</label>
+        <select form="edit-form" id="author-input" name="author" required></select>
     </div>
 
     <div class="row">
-        <p th:text="#{book.form.genres}"></p>
-        <ul>
-            <li th:each="genreDto : ${genres}">
-                <input type="checkbox" th:name="genres" th:value="${genreDto.id}" th:checked="${book.genresDto.contains(genreDto)}"/>
-                <label th:for="${#ids.next('features')}"
-                       th:text="${genreDto.name}">Novel</label>
-            </li>
-        </ul>
+        <p id="genres-input">Genres:
+        </p>
     </div>
 
     <div class="row">
-        <button type="submit" th:text="#{form.button.save}">Save</button>
+        <button type="submit">Save</button>
     </div>
 </form>
 
-<div>
-    <p th:text="#{lang.change}">Language:</p>
-    <a th:text="#{lang.eng}" href="?lang=en_EN">English</a>
-    <a th:text="#{lang.rus}" href="?lang=ru_RU">Russia</a>
-</div>
+<script src="../static/fasa.js"> </script>
+<script src="../webjars/jquery/3.3.1/jquery.min.js"></script>
+
+<script>
+    $(function () {
+        fillAuthors();
+        fillGenres();
+        fillBookData();
+    });
+</script>
 
 </body>
 </html>

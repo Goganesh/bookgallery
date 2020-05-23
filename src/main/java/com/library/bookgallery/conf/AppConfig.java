@@ -33,18 +33,6 @@ public class AppConfig {
     private static Logger logger = LoggerFactory.getLogger(AppConfig.class);
 
     @Bean
-    public MessageSource messageSource() {
-        ReloadableResourceBundleMessageSource ms
-                = new ReloadableResourceBundleMessageSource();
-        ms.setBasename(env.getProperty("locale.localeClasspath"));
-        ms.setDefaultEncoding(env.getProperty("locale.defaultEncoding"));
-        ms.setDefaultLocale(new Locale(
-                env.getProperty("locale.defaultLocaleLanguage"),
-                env.getProperty("locale.defaultLocaleCountry")));
-        return ms;
-    }
-
-    @Bean
     public DataSource dataSource(){
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
 
