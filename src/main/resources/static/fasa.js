@@ -48,25 +48,7 @@ function sendBooksDelete(url) {
         type: 'DELETE',
         success: function(data){
             $('tbody').empty();
-            data.forEach(function (object) {
-                $('tbody').append(`
-                    <tr>
-                        <td>${object.id}</td>
-                        <td>${object.name}</td>
-                        <td>${object.authorDto.name}</td>
-                        <td id="${object.id}"></td>
-                        <td>
-                            <button onclick="sendEdit('/books/${object.id}')">Edit</button>
-                        </td>
-                        <td>
-                            <button onclick="sendBooksDelete('/books/${object.id}')">Delete</button>
-                        </td>
-                    </tr>
-                `)
-                $.each(object.genresDto, function(index, value){
-                    $('#' + object.id).append(value.name + ' ');
-                });
-            });
+            fillBooksData();
         }
     })
 }
@@ -98,20 +80,7 @@ function sendGenresDelete(url) {
         type: 'DELETE',
         success: function(data){
             $('tbody').empty();
-            data.forEach(function (object) {
-                $('tbody').append(`
-                    <tr>
-                        <td>${object.id}</td>
-                        <td>${object.name}</td>
-                        <td>
-                            <button onclick="sendEdit('/genres/${object.id}')">Edit</button>
-                        </td>
-                        <td>
-                            <button onclick="sendGenresDelete('/genres/${object.id}')">Delete</button>
-                        </td>
-                    </tr>
-                `)
-            });
+            fillGenresData();
         }
     })
 }
@@ -185,20 +154,7 @@ function sendAuthorsDelete(url) {
         type: 'DELETE',
         success: function(data){
             $('tbody').empty();
-            data.forEach(function (object) {
-                $('tbody').append(`
-                    <tr>
-                        <td>${object.id}</td>
-                        <td>${object.name}</td>
-                        <td>
-                            <button onclick="sendEdit('/authors/${object.id}')">Edit</button>
-                        </td>
-                        <td>
-                            <button onclick="sendAuthorsDelete('authors/${object.id}')">Delete</button>
-                        </td>
-                    </tr>
-                `)
-            });
+            fillAuthorsData();
         }
     })
 }
