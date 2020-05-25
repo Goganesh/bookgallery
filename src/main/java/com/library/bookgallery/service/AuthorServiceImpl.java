@@ -31,7 +31,7 @@ public class AuthorServiceImpl implements AuthorService {
     }
 
     @Override
-    public void delete(Author author) {
-        authorRepository.delete(author);
+    public void deleteById(long id) {
+        authorRepository.deleteById(id);
     }
 }

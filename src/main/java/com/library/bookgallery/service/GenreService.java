@@ -9,6 +9,6 @@ public interface GenreService {
     List<Genre> findAll();
     Genre findById(long id);
     Genre save(Genre genre);
-    void delete(Genre genre);
+    void deleteById(long id);
     List<Genre> findByIdIn(List<Long> genresId);
 }

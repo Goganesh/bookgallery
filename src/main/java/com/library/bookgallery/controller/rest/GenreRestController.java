@@ -33,15 +33,7 @@ public class GenreRestController {
     }
 
     @DeleteMapping("/genres/{id}")
-    public List<GenreDto> deleteGenre(@PathVariable(value = "id") Long id) {
-
-        Genre genreForDelete = genreService.findById(id);
-        genreService.delete(genreForDelete);
-
-        List<GenreDto> genresDto = genreService.findAll()
-                .stream()
-                .map(GenreDto::toDto)
-                .collect(Collectors.toList());
-        return genresDto;
+    public void deleteGenre(@PathVariable(value = "id") Long id) {
+        genreService.deleteById(id);
     }
 }

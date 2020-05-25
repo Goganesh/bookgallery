@@ -43,14 +43,7 @@ public class BookRestController {
     }
 
     @DeleteMapping("/books/{id}")
-    public List<BookDto> deleteBook(@PathVariable(value = "id") Long id) {
-        Book bookForDelete = bookService.findById(id);
-        bookService.delete(bookForDelete);
-
-        List<BookDto> booksDto = bookService.findAll()
-                .stream()
-                .map(BookDto::toDto)
-                .collect(Collectors.toList());
-        return booksDto;
+    public void deleteBook(@PathVariable(value = "id") Long id) {
+        bookService.deleteById(id);
     }
 }

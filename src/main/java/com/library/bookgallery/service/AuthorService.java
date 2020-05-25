@@ -8,6 +8,6 @@ public interface AuthorService {
     List<Author> findAll();
     Author findById(long id);
     Author save(Author author);
-    void delete(Author author);
+    void deleteById(long id);
 
 }

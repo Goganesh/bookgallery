@@ -33,15 +33,8 @@ public class AuthorRestController {
     }
 
     @DeleteMapping("/authors/{id}")
-    public List<AuthorDto> deleteAuthor(@PathVariable(value = "id") Long id) {
-
-        Author authorForDelete = authorService.findById(id);
-        authorService.delete(authorForDelete);
-
-        List<AuthorDto> authorsDto = authorService.findAll()
-                .stream()
-                .map(AuthorDto::toDto)
-                .collect(Collectors.toList());
-        return authorsDto;
+    public void deleteAuthor(@PathVariable(value = "id") Long id) {
+        authorService.deleteById(id);
     }
+
 }
