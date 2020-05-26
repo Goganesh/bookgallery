@@ -125,7 +125,25 @@ function fillGenreData(){
             $('#id-input').attr('value', data.id);
             $('#name-input').val(data.name);
         })
-    }
+}
+
+function callGenre(){
+    let obj = new Object();
+    obj.id = $("#id-input").attr("value");
+    obj.name = $("#name-input").val();
+    let json = JSON.stringify(obj);
+
+    $.ajax({
+        url: "/genres",
+        type: "POST",
+        data: json,
+        contentType: 'application/json',
+        success: function(data, status, xhr){
+            window.location.replace("/genres");
+        }
+    })
+}
+
 /*---*/
 
 /*Authors*/
@@ -168,4 +186,22 @@ function fillAuthorData(){
         $('#name-input').val(data.name);
     });
 }
+
+function callAuthor(){
+    let obj = new Object();
+    obj.id = $("#id-input").attr("value");
+    obj.name = $("#name-input").val();
+    let json = JSON.stringify(obj);
+
+    $.ajax({
+        url: "/authors",
+        type: "POST",
+        data: json,
+        contentType: 'application/json',
+        success: function(data, status, xhr){
+            window.location.replace("/authors");
+        }
+    })
+}
+
 /*---*/

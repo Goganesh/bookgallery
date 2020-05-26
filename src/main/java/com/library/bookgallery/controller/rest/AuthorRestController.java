@@ -37,4 +37,9 @@ public class AuthorRestController {
         authorService.deleteById(id);
     }
 
+    @PostMapping("/authors")
+    public void saveAuthor(@RequestBody AuthorDto authorDto) {
+        Author saved = authorService.save(AuthorDto.toAuthor(authorDto));
+    }
+
 }

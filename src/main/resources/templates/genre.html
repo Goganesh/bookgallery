@@ -28,7 +28,6 @@
     <a method="get" href="/genres">Get all genres</a>
 </p>
 <!-- Genre edition -->
-<form id="edit-form" action="/genres" method="post">
 
     <h1>Genre Info:</h1>
 
@@ -43,11 +42,10 @@
     </div>
 
     <div class="row">
-        <button type="submit">Save</button>
+        <button onclick="callGenre()" type="submit">Save</button>
     </div>
-</form>
 
-<script src="../static/fasa.js"> </script>
+<script src="../static/tasa.js"> </script>
 <script src="../webjars/jquery/3.3.1/jquery.min.js"></script>
 
 <script>

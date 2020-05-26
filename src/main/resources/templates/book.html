@@ -28,8 +28,6 @@
     <a method="get" href="/authors">Get all books</a> </br>
 </p>
 <!-- Book edition -->
-<form id="edit-form" action="/books" method="post">
-
     <h1>Book Info:</h1>
 
     <div class="row">
@@ -44,7 +42,7 @@
 
     <div class="row">
         <label for="author-input">Author:</label>
-        <select form="edit-form" id="author-input" name="author" required></select>
+        <select id="author-input" name="author" required></select>
     </div>
 
     <div class="row">
@@ -53,11 +51,10 @@
     </div>
 
     <div class="row">
-        <button type="submit">Save</button>
+        <button onclick="callBook()" type="submit">Save</button>
     </div>
-</form>
 
-<script src="../static/fasa.js"> </script>
+<script src="../static/tasa.js"> </script>
 <script src="../webjars/jquery/3.3.1/jquery.min.js"></script>
 
 <script>

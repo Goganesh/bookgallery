@@ -36,4 +36,9 @@ public class GenreRestController {
     public void deleteGenre(@PathVariable(value = "id") Long id) {
         genreService.deleteById(id);
     }
+
+    @PostMapping("/genres")
+    public void saveGenre(@RequestBody GenreDto genreDto) {
+        Genre saved = genreService.save(GenreDto.toGenre(genreDto));
+    }
 }
