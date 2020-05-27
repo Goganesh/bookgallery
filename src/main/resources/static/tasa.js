@@ -25,7 +25,7 @@ function fillBooksData(){
                 <tr>
                     <td>${object.id}</td>
                     <td>${object.name}</td>
-                    <td>${object.authorDto.name}</td>
+                    <td>${object.author.name}</td>
                     <td id="${object.id}"></td>
                     <td>
                         <button onclick="sendEdit('/books/${object.id}')">Edit</button>
@@ -35,7 +35,7 @@ function fillBooksData(){
                     </td>
                 </tr>
             `)
-            $.each(object.genresDto, function(index, value){
+            $.each(object.genres, function(index, value){
                 $('#' + object.id).append(value.name + ' ');
             });
         });
@@ -108,12 +108,35 @@ function fillBookData(){
     $.get(url()).done(function (data) {
         $('#id-input').attr('value', data.id);
         $('#name-input').val(data.name);
-        let name = '#author-input option[value=' + data.authorDto.id + ']';
+        let name = '#author-input option[value=' + data.author.id + ']';
         $(name).attr('selected', true);
-        $.each(data.genresDto, function(index, value){
+        $.each(data.genres, function(index, value){
             let selector2 = '.genres-input-checkbox[value=' + value.id + ']';
             $(selector2).attr("checked", true);
         });
+    })
+}
+
+function callBook(){
+    let obj = new Object();
+    obj.id = $("#id-input").attr("value");
+    obj.name = $("#name-input").val();
+    obj.author = $("#author-input option:selected").val();
+    let checked = [];
+    $("input:checkbox:checked").each(function() {
+        checked.push($(this).val());
+    });
+    obj.genres = checked;
+    let json = JSON.stringify(obj);
+
+    $.ajax({
+        url: "/books",
+        type: "POST",
+        data: json,
+        contentType: 'application/json',
+        success: function(data, status, xhr){
+            window.location.replace("/books");
+        }
     })
 }
 

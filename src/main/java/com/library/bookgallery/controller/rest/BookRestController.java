@@ -55,25 +55,7 @@ public class BookRestController {
 
     @SneakyThrows
     @PostMapping("/books")
-    public void saveBook(@RequestBody String json) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        JsonNode jsonNode = objectMapper.readTree(json);
-
-        long id = jsonNode.get("id").asLong();
-        String name = jsonNode.get("name").asText();
-        long authorId = jsonNode.get("author").asLong();
-        String genresJson = jsonNode.findValue("genres").toString();
-        Long genresId[] = objectMapper.readValue(genresJson, Long[].class);
-
-        Book book;
-        Author author = authorService.findById(authorId);
-        List<Genre> genres = genreService.findByIdIn(Arrays.asList(genresId));
-
-        if (id == -1){
-            book = new Book(name, author, genres);
-        } else {
-            book = new Book(id, name, author, genres);
-        }
-        Book saved = bookService.save(book);
+    public void saveBook(@RequestBody BookDto bookDto) {
+        Book saved = bookService.save(BookDto.toBook(bookDto));
     }
 }
