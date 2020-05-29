@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8"/>
     <title>List of all authors</title>
@@ -7,51 +7,38 @@
         body {
             padding: 50px;
         }
-
-        .persons, .persons td {
-            border: 1px solid lightgray;
-            padding: 5px;
-        }
     </style>
 </head>
 <body>
 
 <p>
-    <a th:href="@{/books}" method="get" th:text="#{button.allBooks}" href="books.html">Get all books</a> </br>
-    <a th:href="@{/author}" th:method="get" th:text="#{button.createAuthor}" href="author.html">Create author</a> </br>
+    <a method="get" href="/books">Get all books</a> </br>
+    <a method="get" href="/authors/-1">Create author</a> </br>
 </p>
 
-<h1 th:text="#{authors.title}">Authors:</h1>
+<h1>Authors:</h1>
 
 <table class="authors">
     <thead>
     <tr>
-        <th th:text="#{authors.table.id}">ID</th>
-        <th th:text="#{authors.table.name}">Name</th>
+        <th>ID</th>
+        <th>Name</th>
         <th></th>
         <th></th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="author : ${authors}">
-        <td th:text="${author.id}">1</td>
-        <td th:text="${author.name}">Alexandre Dumas</td>
-        <td>
-            <button th:with="url = @{/author/{id}(id=${author.id})}" th:onclick="sendEdit([[${url}]])" th:text="#{table.button.edit}">Edit</button>
-        </td>
-        <td>
-            <button th:with="url = @{/author/{id}(id=${author.id})}" th:onclick="sendDelete([[${url}]])" th:text="#{table.button.delete}">Delete</button>
-        </td>
-    </tr>
     </tbody>
 </table>
 
-<div>
-    <p th:text="#{lang.change}">Language:</p>
-    <a th:text="#{lang.eng}" href="?lang=en_EN">English</a>
-    <a th:text="#{lang.rus}" href="?lang=ru_RU">Russia</a>
-</div>
+<script src="../static/tasa.js"> </script>
+<script src="../webjars/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    $(function () {
+        fillAuthorsData();
+    });
+</script>
 
-<script src="/static/asa.js"></script>
+
 </body>
 </html>

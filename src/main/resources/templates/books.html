@@ -1,64 +1,47 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
-    <!--<meta charset="UTF-8"/>-->
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
     <title>List of all books</title>
     <style type="text/css">
         body {
             padding: 50px;
         }
-
-        .persons, .persons td {
-            border: 1px solid lightgray;
-            padding: 5px;
-        }
     </style>
 </head>
 <body>
-
 <p>
-    <a th:href="@{/book}" method="get" th:text="#{button.createBook}" href="book.html">Create book</a> </br>
-    <a th:href="@{/authors}" method="get" th:text="#{button.allAuthors}" href="authors.html">Get all authors</a> </br>
-    <a th:href="@{/genres}" method="get" th:text="#{button.allGenres}" href="genres.html">Get all genres</a>
+    <a method="get" href="/books/-1">Create book</a> </br>
+    <a method="get" href="/authors">Get all authors</a> </br>
+    <a method="get" href="/genres">Get all genres</a>
 </p>
 
-<h1 th:text="#{books.title}">Books:</h1>
+<h1>Books:</h1>
 
 <table class="books">
     <thead>
     <tr>
-        <th th:text="#{books.table.id}">ID</th>
-        <th th:text="#{books.table.name}">Name</th>
-        <th th:text="#{books.table.author}">Author</th>
-        <th th:text="#{books.table.genres}">Genres</th>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Author</th>
+        <th>Genres</th>
         <th></th>
         <th></th>
     </tr>
     </thead>
     <tbody>
-    <tr th:each="book : ${books}">
-        <td th:text="${book.id}">1</td>
-        <td th:text="${book.name}">The Three Musketeers</td>
-        <td th:text="${book.authorDto.name}">Alexandre Dumas</td>
-        <td th:text="${book.genresDto}">Novel</td>
-        <td>
-            <button th:with="url = @{/book/{id}(id=${book.id})}" th:onclick="sendEdit([[${url}]])" th:text="#{table.button.edit}">Edit</button>
-        </td>
-
-        <td>
-            <button th:with="url = @{/book/{id}(id=${book.id})}" th:onclick="sendDelete([[${url}]])" th:text="#{table.button.delete}">Delete</button>
-        </td>
-    </tr>
     </tbody>
 </table>
 
-<div>
-    <p th:text="#{lang.change}">Language:</p>
-    <a th:text="#{lang.eng}" href="?lang=en_EN">English</a>
-    <a th:text="#{lang.rus}" href="?lang=ru_RU">Russia</a>
-</div>
+<script src="../static/tasa.js"> </script>
+<script src="webjars/jquery/3.3.1/jquery.min.js"></script>
 
-<script src="/static/asa.js"></script>
+<script>
+    $(function () {
+        fillBooksData();
+    });
+</script>
+
+
 </body>
 </html>

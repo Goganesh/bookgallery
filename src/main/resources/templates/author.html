@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8"/>
     <title>Edit author</title>
@@ -25,34 +25,35 @@
 <body>
 
 <p>
-    <a th:href="@{/authors}" th:text="#{button.allAuthors}" method="get" href="authors.html">Get all authors</a> </br>
+    <a get="get" href="/authors">Get all authors</a> </br>
 </p>
 
 <!-- Author edition -->
-<form id="edit-form" th:action="@{/author(id=${author.id})}" th:method="post" action="authors.html">
 
-    <h1 th:text="#{author.title}">Author Info:</h1>
+    <h1>Author Info:</h1>
 
     <div class="row">
-        <label for="id-input" th:text="#{author.form.id}">ID:</label>
-        <input id="id-input" type="text" readonly="readonly" th:value="${author.id}" value="1"/>
+        <label for="id-input">ID:</label>
+        <input id="id-input" name="id" type="text" value="-1" readonly="readonly"/>
     </div>
 
     <div class="row">
-        <label for="name-input" th:text="#{author.form.name}">Name:</label>
-        <input id="name-input" name="name" type="text" th:value="${author.name}" value="Alexandre Dumas" required/>
+        <label for="name-input" >Name:</label>
+        <input id="name-input" name="name" type="text" required/>
     </div>
 
     <div class="row">
-        <button type="submit" th:text="#{form.button.save}">Save</button>
+        <button onclick="callAuthor()" type="submit">Save</button>
     </div>
-</form>
 
-<div>
-    <p th:text="#{lang.change}">Language:</p>
-    <a th:text="#{lang.eng}" href="?lang=en_EN">English</a>
-    <a th:text="#{lang.rus}" href="?lang=ru_RU">Russia</a>
-</div>
+<script src="../static/tasa.js"> </script>
+<script src="../webjars/jquery/3.3.1/jquery.min.js"></script>
+
+<script>
+    $(function () {
+        fillAuthorData();
+    });
+</script>
 
 </body>
 </html>

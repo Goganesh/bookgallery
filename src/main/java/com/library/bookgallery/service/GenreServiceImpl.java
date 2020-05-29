@@ -36,7 +36,7 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public void delete(Genre genre) {
-        genreRepository.delete(genre);
+    public void deleteById(long id) {
+        genreRepository.deleteById(id);
     }
 }
