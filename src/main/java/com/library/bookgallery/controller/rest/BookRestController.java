@@ -32,7 +32,6 @@ public class BookRestController {
     @SneakyThrows
     @PostMapping("/books")
     public Mono<Book> saveBook(@RequestBody Book book) {
-        System.out.println(book);
         if (book.getId().equals("-1")) {
             book.setId(null);
         }
