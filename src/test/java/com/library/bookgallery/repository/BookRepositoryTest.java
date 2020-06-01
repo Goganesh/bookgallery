@@ -22,42 +22,6 @@ class BookRepositoryTest {
     @Autowired
     private BookRepository repository;
 
-    @DisplayName("возвращать все книги и связанные сущности по имени")
-    @Test
-    void shouldReturnAllBooks() {
-        Book book1 = new Book();
-        book1.setName("War and Peace");
-        Book book2 = new Book();
-        book2.setName("Game of throne");
-
-        repository.saveAll(Arrays.asList(book1, book2)).subscribe();
-
-        StepVerifier.create(
-                repository.findAll()
-        )
-                .expectNextCount(2)
-                .expectComplete()
-                .verify();
-    }
-
-
-    @DisplayName("возвращать книгу и связанные сущности по имени")
-    @Test
-    void shouldReturnBookByName() {
-        String expectedName = "War and Peace";
-        Book book1 = new Book();
-        book1.setName(expectedName);
-
-        repository.save(book1).subscribe();
-
-        StepVerifier.create(
-                repository.findByName(expectedName)
-        )
-                .expectNext(book1)
-                .expectComplete()
-                .verify();
-    }
-
     @DisplayName("возвращать книги по автору")
     @Test
     void getAllBooksByAuthor() {
