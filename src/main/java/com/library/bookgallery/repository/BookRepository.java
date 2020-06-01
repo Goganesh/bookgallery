@@ -9,7 +9,10 @@ import reactor.core.publisher.Mono;
 
 public interface BookRepository extends ReactiveCrudRepository<Book, String> {
     Flux<Book> findByAuthor(Author author);
-    void deleteByAuthor(Author author);
-    void deleteByGenres(Genre genre);
+    Flux<Book> findByGenres(Genre genre);
+    Flux<Book> findByAuthorId(String id);
+    Flux<Book> findByGenresId(String id);
+    Mono<Void> deleteByAuthor(Author author);
+    Mono<Void> deleteByGenres(Genre genre);
     Mono<Book> findByName(String name);
 }

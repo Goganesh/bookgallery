@@ -7,7 +7,7 @@ import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import java.util.Collection;
 
-public interface GenreRepository extends ReactiveCrudRepository<Genre, String> {
+public interface GenreRepository extends ReactiveCrudRepository<Genre, String>, CustomGenreRepository {
     Flux<Genre> findByIdIn(Collection<String> genresId);
     Mono<Genre> findByName(String name);
 }

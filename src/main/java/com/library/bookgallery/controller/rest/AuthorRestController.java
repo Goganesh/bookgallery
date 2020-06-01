@@ -28,15 +28,16 @@ public class AuthorRestController {
 
     @DeleteMapping("/authors/{id}")
     public  Mono<Void> deleteAuthor(@PathVariable(value = "id") String id) {
-        return authorRepository.deleteById(id);
+        return authorRepository.deleteAuthorWithBooksById(id);
     }
 
     @PostMapping("/authors")
     public Mono<Author> saveAuthor(@RequestBody Author author) {
         if (author.getId().equals("-1")) {
             author.setId(null);
+            return authorRepository.save(author);
         }
-        return authorRepository.save(author);
+        return authorRepository.updateAuthorWithBooksByAuthor(author);
     }
 
 }

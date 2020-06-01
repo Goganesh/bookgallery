@@ -25,14 +25,15 @@ public class GenreRestController {
 
     @DeleteMapping("/genres/{id}")
     public Mono<Void> deleteGenre(@PathVariable(value = "id") String id) {
-        return genreRepository.deleteById(id);
+        return genreRepository.deleteGenreWithBooksById(id);
     }
 
     @PostMapping("/genres")
     public Mono<Genre> saveGenre(@RequestBody Genre genre) {
         if (genre.getId().equals("-1")) {
             genre.setId(null);
+            return genreRepository.save(genre);
         }
-        return genreRepository.save(genre);
+        return genreRepository.updateGenreWithBooksByGenre(genre);
     }
 }

@@ -9,12 +9,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.mongodb.config.AbstractReactiveMongoConfiguration;
+import org.springframework.data.mongodb.core.ReactiveMongoTemplate;
 import org.springframework.web.reactive.function.server.*;
 import java.net.URI;
 
 @Configuration
 @AllArgsConstructor
-public class AppConfig extends AbstractReactiveMongoConfiguration {
+public class AppConfig {
 
     @Bean
     public RouterFunction<ServerResponse> mainPageRouter(
@@ -27,14 +28,5 @@ public class AppConfig extends AbstractReactiveMongoConfiguration {
     public RouterFunction<ServerResponse> resourceRouter() {
         return RouterFunctions.resources("/static/**", new ClassPathResource("static/"));
 
-    }
-    @Override
-    public MongoClient reactiveMongoClient() {
-        return MongoClients.create();
-    }
-
-    @Override
-    protected String getDatabaseName() {
-        return "library";
     }
 }
