@@ -5,6 +5,6 @@ import reactor.core.publisher.Mono;
 
 public interface CustomGenreRepository {
     Mono<Void> deleteGenreWithBooksById(String id);
-    Mono<Void> deleteGenreWithBooksByGenre(Genre genre);
+    Mono<Void> deleteGenreWithBooksByGenre(Mono<Genre> genre);
     Mono<Genre> updateGenreWithBooksByGenre(Genre genre);
 }

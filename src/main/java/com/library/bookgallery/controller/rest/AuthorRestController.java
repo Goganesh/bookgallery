@@ -13,7 +13,6 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 public class AuthorRestController {
 
-    private final ApplicationEventPublisher publisher;
     private final AuthorRepository authorRepository;
 
     @GetMapping("/api/authors")

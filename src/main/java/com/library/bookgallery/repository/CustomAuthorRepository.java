@@ -5,6 +5,6 @@ import reactor.core.publisher.Mono;
 
 public interface CustomAuthorRepository {
     Mono<Void> deleteAuthorWithBooksById(String id);
-    Mono<Void> deleteAuthorWithBooksByAuthor(Author author);
+    Mono<Void> deleteAuthorWithBooksByAuthor(Mono<Author> author);
     Mono<Author> updateAuthorWithBooksByAuthor(Author author);
 }

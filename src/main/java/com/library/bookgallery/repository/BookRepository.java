@@ -12,7 +12,7 @@ public interface BookRepository extends ReactiveCrudRepository<Book, String> {
     Flux<Book> findByGenres(Genre genre);
     Flux<Book> findByAuthorId(String id);
     Flux<Book> findByGenresId(String id);
-    Mono<Void> deleteByAuthor(Author author);
-    Mono<Void> deleteByGenres(Genre genre);
+    Mono<Void> deleteByAuthor(Mono<Author> author);
+    Mono<Void> deleteByGenres(Mono<Genre> genre);
     Mono<Book> findByName(String name);
 }
