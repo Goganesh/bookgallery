@@ -2,19 +2,17 @@ package com.library.bookgallery.repository;
 
 import com.library.bookgallery.domain.Author;
 import com.library.bookgallery.domain.Book;
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import java.util.List;
+import com.library.bookgallery.domain.Genre;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-public interface BookRepository extends JpaRepository<Book, Long> {
-    @EntityGraph("book-author-genres-entity-graph")
-    List<Book> findByAuthor(Author author);
-
-    @EntityGraph("book-author-genres-entity-graph")
-    Book findByName(String name);
-
-    @Override
-    @Query("select distinct b from Book b join fetch b.author join fetch b.genres")
-    List<Book> findAll();
+public interface BookRepository extends ReactiveCrudRepository<Book, String> {
+    Flux<Book> findByAuthor(Author author);
+    Flux<Book> findByGenres(Genre genre);
+    Flux<Book> findByAuthorId(String id);
+    Flux<Book> findByGenresId(String id);
+    Mono<Void> deleteByAuthor(Mono<Author> author);
+    Mono<Void> deleteByGenres(Mono<Genre> genre);
+    Mono<Book> findByName(String name);
 }

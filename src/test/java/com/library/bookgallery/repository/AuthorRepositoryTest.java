@@ -4,26 +4,40 @@ import com.library.bookgallery.domain.Author;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
+import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Repository для работы с авторами")
-@DataJpaTest
+@DataMongoTest
 class AuthorRepositoryTest {
 
     @Autowired
     private AuthorRepository repository;
 
-    @Autowired
-    private TestEntityManager em;
+    @DisplayName("сохранять автора и возвращать моно")
+    @Test
+    void shouldSaveAuthorAndReturnMono() {
+        String expectedAuthorName = "Georgy Basiladze";
+        Author author = new Author(expectedAuthorName);
+        Mono<Author> authorMono = repository.save(author);
 
-    @DisplayName("сохранять нового автора и возвращать id")
+        StepVerifier
+                .create(authorMono)
+                .expectNext(author)
+                .expectComplete()
+                .verify();
+    }
+
+    @DisplayName("возвращать автора по имени")
     @Test
     void shouldReturnAuthorByName() {
-        Author actualAuthor = repository.findByName("Alexandre Dumas");
-        Author expectedAuthor = em.find(Author.class, 1L);
+        String expectedAuthorName = "Alexandre Dumas";
+        Mono<Author> actualAuthor = repository.findByName(expectedAuthorName);
 
-        assertEquals(expectedAuthor, actualAuthor);
+        StepVerifier
+                .create(actualAuthor)
+                .assertNext(author -> assertEquals(expectedAuthorName, author.getName()));
     }
 }

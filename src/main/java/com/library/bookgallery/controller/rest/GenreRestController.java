@@ -1,44 +1,39 @@
 package com.library.bookgallery.controller.rest;
 
-import com.library.bookgallery.controller.dto.GenreDto;
 import com.library.bookgallery.domain.Genre;
-import com.library.bookgallery.service.GenreService;
+import com.library.bookgallery.repository.GenreRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @AllArgsConstructor
 public class GenreRestController {
 
-    private final GenreService genreService;
+    private final GenreRepository genreRepository;
 
     @GetMapping("/api/genres")
-    public List<GenreDto> getGenres(){
-        List<GenreDto> genresDto = genreService.findAll()
-                .stream()
-                .map(GenreDto::toDto)
-                .collect(Collectors.toList());
-        return genresDto;
+    public Flux<Genre> getGenres(){
+        return genreRepository.findAll();
     }
 
     @GetMapping("/api/genres/{id}")
-    public GenreDto getGenre(@PathVariable(value = "id") Long id) {
-        GenreDto genreDto = GenreDto.toDto(genreService.findById(id));
-        return genreDto;
+    public Mono<Genre> getGenre(@PathVariable(value = "id") String id) {
+        return genreRepository.findById(id);
     }
 
     @DeleteMapping("/genres/{id}")
-    public void deleteGenre(@PathVariable(value = "id") Long id) {
-        genreService.deleteById(id);
+    public Mono<Void> deleteGenre(@PathVariable(value = "id") String id) {
+        return genreRepository.deleteGenreWithBooksById(id);
     }
 
     @PostMapping("/genres")
-    public void saveGenre(@RequestBody GenreDto genreDto) {
-        Genre saved = genreService.save(GenreDto.toGenre(genreDto));
+    public Mono<Genre> saveGenre(@RequestBody Genre genre) {
+        if (genre.getId().equals("-1")) {
+            genre.setId(null);
+            return genreRepository.save(genre);
+        }
+        return genreRepository.updateGenreWithBooksByGenre(genre);
     }
 }

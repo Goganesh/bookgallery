@@ -1,61 +1,40 @@
 package com.library.bookgallery.controller.rest;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.library.bookgallery.controller.dto.AuthorDto;
-import com.library.bookgallery.controller.dto.BookDto;
-import com.library.bookgallery.controller.dto.GenreDto;
-import com.library.bookgallery.domain.Author;
 import com.library.bookgallery.domain.Book;
-import com.library.bookgallery.domain.Genre;
-import com.library.bookgallery.service.AuthorService;
-import com.library.bookgallery.service.BookService;
-import com.library.bookgallery.service.GenreService;
+import com.library.bookgallery.repository.BookRepository;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @AllArgsConstructor
 public class BookRestController {
 
-    private final BookService bookService;
-    private final AuthorService authorService;
-    private final GenreService genreService;
+    private final BookRepository bookRepository;
 
     @GetMapping("/api/books")
-    public List<BookDto> getBooks(){
-        List<BookDto> booksDto = bookService.findAll()
-                .stream()
-                .map(BookDto::toDto)
-                .collect(Collectors.toList());
-        return booksDto;
+    public Flux<Book> getBooks(){
+        return bookRepository.findAll();
     }
 
     @GetMapping("/api/books/{id}")
-    public BookDto getBook(@PathVariable(value = "id") Long id) {
-        BookDto bookDto = BookDto.toDto(bookService.findById(id));
-
-        return bookDto;
+    public Mono<Book> getBook(@PathVariable(value = "id") String id) {
+        return bookRepository.findById(id);
     }
 
     @DeleteMapping("/books/{id}")
-    public void deleteBook(@PathVariable(value = "id") Long id) {
-        bookService.deleteById(id);
+    public Mono<Void> deleteBook(@PathVariable(value = "id") String id) {
+        return bookRepository.deleteById(id);
     }
 
     @SneakyThrows
     @PostMapping("/books")
-    public void saveBook(@RequestBody BookDto bookDto) {
-        Book saved = bookService.save(BookDto.toBook(bookDto));
+    public Mono<Book> saveBook(@RequestBody Book book) {
+        if (book.getId().equals("-1")) {
+            book.setId(null);
+        }
+        return bookRepository.save(book);
     }
 }

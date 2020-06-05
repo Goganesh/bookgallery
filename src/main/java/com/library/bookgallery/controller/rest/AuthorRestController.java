@@ -1,45 +1,42 @@
 package com.library.bookgallery.controller.rest;
 
-import com.library.bookgallery.controller.dto.AuthorDto;
 import com.library.bookgallery.domain.Author;
-import com.library.bookgallery.service.AuthorService;
+import com.library.bookgallery.repository.AuthorRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.context.ApplicationEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 @RestController
 @AllArgsConstructor
 public class AuthorRestController {
 
-    private final AuthorService authorService;
+    private final AuthorRepository authorRepository;
 
     @GetMapping("/api/authors")
-    public List<AuthorDto> getAuthors(){
-        List<AuthorDto> authorsDto = authorService.findAll()
-                .stream()
-                .map(AuthorDto::toDto)
-                .collect(Collectors.toList());
-        return authorsDto;
+    public Flux<Author> getAuthors(){
+        return authorRepository.findAll();
     }
 
     @GetMapping("/api/authors/{id}")
-    public AuthorDto getAuthor(@PathVariable(value = "id") Long id) {
-        AuthorDto authorDto = AuthorDto.toDto(authorService.findById(id));
-        return authorDto;
+    public Mono<Author> getAuthor(@PathVariable(value = "id") String id) {
+        return authorRepository.findById(id);
     }
 
     @DeleteMapping("/authors/{id}")
-    public void deleteAuthor(@PathVariable(value = "id") Long id) {
-        authorService.deleteById(id);
+    public  Mono<Void> deleteAuthor(@PathVariable(value = "id") String id) {
+        return authorRepository.deleteAuthorWithBooksById(id);
     }
 
     @PostMapping("/authors")
-    public void saveAuthor(@RequestBody AuthorDto authorDto) {
-        Author saved = authorService.save(AuthorDto.toAuthor(authorDto));
+    public Mono<Author> saveAuthor(@RequestBody Author author) {
+        if (author.getId().equals("-1")) {
+            author.setId(null);
+            return authorRepository.save(author);
+        }
+        return authorRepository.updateAuthorWithBooksByAuthor(author);
     }
 
 }
