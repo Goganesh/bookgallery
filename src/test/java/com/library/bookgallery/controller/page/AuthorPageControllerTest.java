@@ -1,6 +1,5 @@
 package com.library.bookgallery.controller.page;
 
-import com.library.bookgallery.controller.page.AuthorPageController;
 import com.library.bookgallery.domain.Author;
 import com.library.bookgallery.service.AuthorService;
 import org.junit.jupiter.api.DisplayName;
@@ -9,6 +8,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import java.util.ArrayList;
@@ -21,9 +21,13 @@ class AuthorPageControllerTest {
 
     @Autowired
     private MockMvc mvc;
-
     @MockBean
     private AuthorService authorService;
+
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_ADMIN"}
+    )
 
     @Test
     @DisplayName("должен вернуть страницу с автором по id")
