@@ -8,6 +8,7 @@ import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -23,12 +24,10 @@ class AuthorPageControllerTest {
     private MockMvc mvc;
     @MockBean
     private AuthorService authorService;
+    @MockBean
+    private UserDetailsService userDetailsService;
 
-    @WithMockUser(
-            username = "admin",
-            authorities = {"ROLE_ADMIN"}
-    )
-
+    @WithMockUser(value = "admin")
     @Test
     @DisplayName("должен вернуть страницу с автором по id")
     public void shouldReturnAuthorPage() throws Exception {
@@ -40,6 +39,7 @@ class AuthorPageControllerTest {
                 .andExpect(view().name("author"));
     }
 
+    @WithMockUser(value = "admin")
     @Test
     @DisplayName("должен вернуть страницу со всеми авторами")
     public void shouldReturnPageWithAllAuthors() throws Exception {
