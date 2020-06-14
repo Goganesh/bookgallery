@@ -27,7 +27,10 @@ class AuthorRestControllerTest {
     @MockBean
     private UserDetailsService userDetailsService;
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_ADMIN"}
+    )
     @Test
     @DisplayName("должен вернуть JSON со всеми авторами")
     public void shouldReturnJsonWithAllAuthors() throws Exception {
@@ -46,8 +49,10 @@ class AuthorRestControllerTest {
                 .andExpect(jsonPath("$[1].name", is("Ernest Hemingway")));
     }
 
-    @WithMockUser(value = "admin")
-    @Test
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_ADMIN"}
+    )@Test
     @DisplayName("должен вернуть JSON c автором")
     public void shouldReturnJsonWithAuthorById() throws Exception {
         Author expectedAuthor1 = new Author(1, "Alexandre Dumas");

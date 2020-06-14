@@ -27,7 +27,10 @@ class AuthorPageControllerTest {
     @MockBean
     private UserDetailsService userDetailsService;
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_ADMIN"}
+    )
     @Test
     @DisplayName("должен вернуть страницу с автором по id")
     public void shouldReturnAuthorPage() throws Exception {
@@ -39,7 +42,10 @@ class AuthorPageControllerTest {
                 .andExpect(view().name("author"));
     }
 
-    @WithMockUser(value = "admin")
+    @WithMockUser(
+            username = "admin",
+            authorities = {"ROLE_ADMIN"}
+    )
     @Test
     @DisplayName("должен вернуть страницу со всеми авторами")
     public void shouldReturnPageWithAllAuthors() throws Exception {
