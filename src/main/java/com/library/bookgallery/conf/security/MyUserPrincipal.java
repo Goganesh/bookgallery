@@ -1,21 +1,29 @@
 package com.library.bookgallery.conf.security;
 
+import com.library.bookgallery.domain.Authority;
 import com.library.bookgallery.domain.User;
+import lombok.AllArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import java.util.Collection;
+
+import java.util.*;
 
 
+@AllArgsConstructor
 public class MyUserPrincipal implements UserDetails {
-    private User user;
-
-    public MyUserPrincipal(User user) {
-        this.user = user;
-    }
+    private final User user;
+    private final List<Authority> authorities;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        if (null == authorities) {
+            return Collections.emptySet();
+        }
+        Set<SimpleGrantedAuthority> grantedAuthorities = new HashSet<>();
+        authorities.forEach(group ->
+                grantedAuthorities.add(new SimpleGrantedAuthority(group.getAuthority())));
+        return grantedAuthorities;
     }
 
     @Override
