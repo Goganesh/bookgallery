@@ -4,10 +4,8 @@ import com.library.bookgallery.controller.dto.AuthorDto;
 import com.library.bookgallery.domain.Author;
 import com.library.bookgallery.service.AuthorService;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,6 +32,7 @@ public class AuthorRestController {
 
     @DeleteMapping("/authors/{id}")
     public void deleteAuthor(@PathVariable(value = "id") Long id) {
+        System.out.println(id);
         authorService.deleteById(id);
     }
 
