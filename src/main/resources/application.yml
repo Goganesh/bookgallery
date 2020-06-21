@@ -14,6 +14,18 @@ spring:
         properties:
             hibernate:
                 format_sql: false
+    data:
+        mongodb:
+            database: library
+            #authentication-database: admin
+            #username: root
+            #password: root
+            port: 27017
+            host: localhost
+    batch:
+        initialize-schema: never
+        job:
+          enabled: true
 logging:
     level:
         ROOT: INFO
