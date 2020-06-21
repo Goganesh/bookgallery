@@ -34,4 +34,9 @@ public class AuthorServiceImpl implements AuthorService {
     public void deleteById(long id) {
         authorRepository.deleteById(id);
     }
+
+    @Override
+    public Author findByName(String name) {
+        return authorRepository.findByName(name);
+    }
 }

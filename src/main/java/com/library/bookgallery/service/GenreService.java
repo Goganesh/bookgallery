@@ -8,6 +8,7 @@ import java.util.List;
 public interface GenreService {
     List<Genre> findAll();
     Genre findById(long id);
+    Genre findByName(String name);
     Genre save(Genre genre);
     void deleteById(long id);
     List<Genre> findByIdIn(List<Long> genresId);
