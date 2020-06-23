@@ -1,5 +1,6 @@
 package com.library.bookgallery.service;
 
+import com.library.bookgallery.domain.Author;
 import com.library.bookgallery.domain.Book;
 import com.library.bookgallery.exception.NotFoundException;
 import com.library.bookgallery.repository.BookRepository;
@@ -33,5 +34,10 @@ public class BookServiceImpl implements BookService {
     @Override
     public void deleteById(long id) {
         bookRepository.deleteById(id);
+    }
+
+    @Override
+    public Book findByNameAndAuthor(String name, Author author) {
+        return bookRepository.findByNameAndAuthor(name, author);
     }
 }

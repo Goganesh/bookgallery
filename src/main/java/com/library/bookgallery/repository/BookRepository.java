@@ -17,4 +17,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
     @Override
     @Query("select distinct b from Book b join fetch b.author join fetch b.genres")
     List<Book> findAll();
+
+    Book findByNameAndAuthor(String name, Author author);
 }

@@ -6,9 +6,15 @@ import com.library.bookgallery.batch.model.GenreMongo;
 import com.library.bookgallery.batch.processor.AuthorItemProcessor;
 import com.library.bookgallery.batch.processor.BookItemProcessor;
 import com.library.bookgallery.batch.processor.GenreItemProcessor;
+import com.library.bookgallery.batch.writer.AuthorJpaIterWriter;
+import com.library.bookgallery.batch.writer.BookJpaItemWriter;
+import com.library.bookgallery.batch.writer.GenreJpaItemWriter;
 import com.library.bookgallery.domain.Author;
 import com.library.bookgallery.domain.Book;
 import com.library.bookgallery.domain.Genre;
+import com.library.bookgallery.service.AuthorService;
+import com.library.bookgallery.service.BookService;
+import com.library.bookgallery.service.GenreService;
 import lombok.AllArgsConstructor;
 import org.slf4j.LoggerFactory;
 import org.springframework.batch.core.*;
@@ -17,19 +23,14 @@ import org.springframework.batch.core.configuration.annotation.StepBuilderFactor
 import org.springframework.batch.core.configuration.annotation.StepScope;
 import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.scope.context.ChunkContext;
+import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.data.MongoItemReader;
 import org.springframework.batch.item.data.builder.MongoItemReaderBuilder;
-import org.springframework.batch.item.database.BeanPropertyItemSqlParameterSourceProvider;
-import org.springframework.batch.item.database.JdbcBatchItemWriter;
-import org.springframework.batch.item.database.JpaItemWriter;
-import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
-import org.springframework.batch.item.database.builder.JpaItemWriterBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.slf4j.Logger;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import javax.persistence.EntityManagerFactory;
-import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.List;
 
@@ -44,9 +45,13 @@ public class DataMirgationJob {
 
     private final JobBuilderFactory jobBuilderFactory;
     private final StepBuilderFactory stepBuilderFactory;
+
     private final MongoTemplate mongoTemplate;
-    private final DataSource dataSource;
     private final EntityManagerFactory entityManagerFactory;
+
+    private final AuthorService authorService;
+    private final GenreService genreService;
+    private final BookService bookService;
 
     @StepScope
     @Bean
@@ -99,33 +104,29 @@ public class DataMirgationJob {
     @StepScope
     @Bean
     public BookItemProcessor bookItemProcessor() {
-        return new BookItemProcessor();
+        return new BookItemProcessor(authorService, genreService);
     }
 
     @StepScope
     @Bean
-    public JdbcBatchItemWriter<Author> jdbcAuthorWriter() {
-        return new JdbcBatchItemWriterBuilder<Author>()
-                .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
-                .sql("INSERT INTO authors (name) VALUES (:name)")
-                .dataSource(dataSource)
-                .build();
+    public ItemWriter<Author> jpaAuthorWriter() {
+        AuthorJpaIterWriter authorJpaIterWriter = new AuthorJpaIterWriter(authorService);
+        authorJpaIterWriter.setEntityManagerFactory(entityManagerFactory);
+        return authorJpaIterWriter;
     }
 
     @StepScope
     @Bean
-    public JdbcBatchItemWriter<Genre> jdbcGenreWriter() {
-        return new JdbcBatchItemWriterBuilder<Genre>()
-                .itemSqlParameterSourceProvider(new BeanPropertyItemSqlParameterSourceProvider<>())
-                .sql("INSERT INTO genres (name) VALUES (:name)")
-                .dataSource(dataSource)
-                .build();
+    public ItemWriter<Genre> jpaGenreWriter() {
+        GenreJpaItemWriter genreJpaItemWriter = new GenreJpaItemWriter(genreService);
+        genreJpaItemWriter.setEntityManagerFactory(entityManagerFactory);
+        return genreJpaItemWriter;
     }
 
-    public JpaItemWriter<Book> jpaBookWriter(){
-        return new JpaItemWriterBuilder<Book>()
-                .entityManagerFactory(entityManagerFactory)
-                .build();
+    public ItemWriter<Book> jpaBookWriter(){
+        BookJpaItemWriter bookJpaItemWriter = new BookJpaItemWriter(bookService);
+        bookJpaItemWriter.setEntityManagerFactory(entityManagerFactory);
+        return bookJpaItemWriter;
     }
 
     @Bean
@@ -157,21 +158,21 @@ public class DataMirgationJob {
                 .<AuthorMongo, Author> chunk(CHUNK_SIZE)
                 .reader(mongoAuthorReader())
                 .processor(authorItemProcessor())
-                .writer(jdbcAuthorWriter())
-                .listener(new ItemReadListener() {
+                .writer(jpaAuthorWriter())
+                .listener(new ItemReadListener<>() {
                     public void beforeRead() { logger.info("Начало чтения"); }
-                    public void afterRead(Object o) { logger.info("Конец чтения"); }
+                    public void afterRead(AuthorMongo o) { logger.info("Конец чтения"); }
                     public void onReadError(Exception e) { logger.info("Ошибка чтения"); }
                 })
-                .listener(new ItemProcessListener() {
-                    public void beforeProcess(Object o) {logger.info("Начало обработки");}
-                    public void afterProcess(Object o, Object o2) {logger.info("Конец обработки");}
-                    public void onProcessError(Object o, Exception e) {logger.info("Ошбка обработки");}
+                .listener(new ItemProcessListener<AuthorMongo, Author>() {
+                    public void beforeProcess(AuthorMongo o) {logger.info("Начало обработки");}
+                    public void afterProcess(AuthorMongo o, Author o2) {logger.info("Конец обработки");}
+                    public void onProcessError(AuthorMongo o, Exception e) {logger.info("Ошбка обработки");}
                 })
-                .listener(new ItemWriteListener() {
-                    public void beforeWrite(List list) { logger.info("Начало записи"); }
-                    public void afterWrite(List list) { logger.info("Конец записи"); }
-                    public void onWriteError(Exception e, List list) { logger.info("Ошибка записи"); }
+                .listener(new ItemWriteListener<Author>() {
+                    public void beforeWrite(List<? extends Author> list) { logger.info("Начало записи"); }
+                    public void afterWrite(List<? extends Author> list) { logger.info("Конец записи"); }
+                    public void onWriteError(Exception e, List<? extends Author> list) { logger.info("Ошибка записи"); }
                 })
                 .listener(new ChunkListener() {
                     public void beforeChunk(ChunkContext chunkContext) {logger.info("Начало пачки");}
@@ -188,21 +189,21 @@ public class DataMirgationJob {
                 .<GenreMongo, Genre> chunk(CHUNK_SIZE)
                 .reader(mongoGenreReader())
                 .processor(genreItemProcessor())
-                .writer(jdbcGenreWriter())
-                .listener(new ItemReadListener() {
+                .writer(jpaGenreWriter())
+                .listener(new ItemReadListener<>() {
                     public void beforeRead() { logger.info("Начало чтения"); }
-                    public void afterRead(Object o) { logger.info("Конец чтения"); }
+                    public void afterRead(GenreMongo o) { logger.info("Конец чтения"); }
                     public void onReadError(Exception e) { logger.info("Ошибка чтения"); }
                 })
-                .listener(new ItemProcessListener() {
-                    public void beforeProcess(Object o) {logger.info("Начало обработки");}
-                    public void afterProcess(Object o, Object o2) {logger.info("Конец обработки");}
-                    public void onProcessError(Object o, Exception e) {logger.info("Ошбка обработки");}
+                .listener(new ItemProcessListener<GenreMongo, Genre>() {
+                    public void beforeProcess(GenreMongo o) {logger.info("Начало обработки");}
+                    public void afterProcess(GenreMongo o, Genre o2) {logger.info("Конец обработки");}
+                    public void onProcessError(GenreMongo o, Exception e) {logger.info("Ошбка обработки");}
                 })
-                .listener(new ItemWriteListener() {
-                    public void beforeWrite(List list) { logger.info("Начало записи"); }
-                    public void afterWrite(List list) { logger.info("Конец записи"); }
-                    public void onWriteError(Exception e, List list) { logger.info("Ошибка записи"); }
+                .listener(new ItemWriteListener<Genre>() {
+                    public void beforeWrite(List<? extends Genre> list) { logger.info("Начало записи"); }
+                    public void afterWrite(List<? extends Genre> list) { logger.info("Конец записи"); }
+                    public void onWriteError(Exception e, List<? extends Genre> list) { logger.info("Ошибка записи"); }
                 })
                 .listener(new ChunkListener() {
                     public void beforeChunk(ChunkContext chunkContext) {logger.info("Начало пачки");}
@@ -220,20 +221,20 @@ public class DataMirgationJob {
                 .reader(mongoBookReader())
                 .processor(bookItemProcessor())
                 .writer(jpaBookWriter())
-                .listener(new ItemReadListener() {
+                .listener(new ItemReadListener<>() {
                     public void beforeRead() { logger.info("Начало чтения"); }
-                    public void afterRead(Object o) { logger.info("Конец чтения"); }
+                    public void afterRead(BookMongo o) { logger.info("Конец чтения"); }
                     public void onReadError(Exception e) { logger.info("Ошибка чтения"); }
                 })
-                .listener(new ItemProcessListener() {
-                    public void beforeProcess(Object o) {logger.info("Начало обработки");}
-                    public void afterProcess(Object o, Object o2) {logger.info("Конец обработки");}
-                    public void onProcessError(Object o, Exception e) {logger.info("Ошбка обработки");}
+                .listener(new ItemProcessListener<BookMongo, Book>() {
+                    public void beforeProcess(BookMongo o) {logger.info("Начало обработки");}
+                    public void afterProcess(BookMongo o, Book o2) {logger.info("Конец обработки");}
+                    public void onProcessError(BookMongo o, Exception e) {logger.info("Ошбка обработки");}
                 })
-                .listener(new ItemWriteListener() {
-                    public void beforeWrite(List list) { logger.info("Начало записи"); }
-                    public void afterWrite(List list) { logger.info("Конец записи"); }
-                    public void onWriteError(Exception e, List list) { logger.info("Ошибка записи"); }
+                .listener(new ItemWriteListener<Book>() {
+                    public void beforeWrite(List<? extends Book> list) { logger.info("Начало записи"); }
+                    public void afterWrite(List<? extends Book> list) { logger.info("Конец записи"); }
+                    public void onWriteError(Exception e, List<? extends Book> list) { logger.info("Ошибка записи"); }
                 })
                 .listener(new ChunkListener() {
                     public void beforeChunk(ChunkContext chunkContext) {logger.info("Начало пачки");}

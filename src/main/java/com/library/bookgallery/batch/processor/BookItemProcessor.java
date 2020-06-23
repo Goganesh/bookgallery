@@ -6,17 +6,17 @@ import com.library.bookgallery.domain.Book;
 import com.library.bookgallery.domain.Genre;
 import com.library.bookgallery.service.AuthorService;
 import com.library.bookgallery.service.GenreService;
+import lombok.AllArgsConstructor;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@AllArgsConstructor
 public class BookItemProcessor implements ItemProcessor<BookMongo, Book> {
 
-    @Autowired
-    private AuthorService authorService;
-    @Autowired
-    private GenreService genreService;
+    private final AuthorService authorService;
+    private final GenreService genreService;
 
     @Override
     public Book process(BookMongo bookMongo) throws Exception {
