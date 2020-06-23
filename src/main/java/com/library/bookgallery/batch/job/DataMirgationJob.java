@@ -53,7 +53,6 @@ public class DataMirgationJob {
     private final GenreService genreService;
     private final BookService bookService;
 
-    @StepScope
     @Bean
     public MongoItemReader<AuthorMongo> mongoAuthorReader() {
         return new MongoItemReaderBuilder<AuthorMongo>()
@@ -65,7 +64,6 @@ public class DataMirgationJob {
                 .build();
     }
 
-    @StepScope
     @Bean
     public MongoItemReader<GenreMongo> mongoGenreReader() {
         return new MongoItemReaderBuilder<GenreMongo>()
@@ -77,7 +75,6 @@ public class DataMirgationJob {
                 .build();
     }
 
-    @StepScope
     @Bean
     public MongoItemReader<BookMongo> mongoBookReader() {
         return new MongoItemReaderBuilder<BookMongo>()
@@ -89,33 +86,28 @@ public class DataMirgationJob {
                 .build();
     }
 
-    @StepScope
     @Bean
     public AuthorItemProcessor authorItemProcessor() {
         return new AuthorItemProcessor();
     }
 
-    @StepScope
     @Bean
     public GenreItemProcessor genreItemProcessor() {
         return new GenreItemProcessor();
     }
 
-    @StepScope
     @Bean
     public BookItemProcessor bookItemProcessor() {
         return new BookItemProcessor(authorService, genreService);
     }
 
-    @StepScope
     @Bean
     public ItemWriter<Author> jpaAuthorWriter() {
         AuthorJpaIterWriter authorJpaIterWriter = new AuthorJpaIterWriter(authorService);
         authorJpaIterWriter.setEntityManagerFactory(entityManagerFactory);
         return authorJpaIterWriter;
     }
-
-    @StepScope
+    
     @Bean
     public ItemWriter<Genre> jpaGenreWriter() {
         GenreJpaItemWriter genreJpaItemWriter = new GenreJpaItemWriter(genreService);

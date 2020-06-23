@@ -23,7 +23,7 @@ spring:
             port: 27017
             host: localhost
     batch:
-        initialize-schema: never
+        initialize-schema: always
         job:
           enabled: true
 logging:
