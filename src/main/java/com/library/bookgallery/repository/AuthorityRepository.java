@@ -8,4 +8,6 @@ public interface AuthorityRepository extends JpaRepository<Authority, Long> {
 
     List<Authority> findByUsername(String username);
 
+    boolean deleteById(long id);
+
 }

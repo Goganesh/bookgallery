@@ -14,12 +14,11 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class AuthorRestController {
 
-    private final AuthorService authorService;
     private final AuthorGate authorGate;
 
     @GetMapping("/api/authors")
     public List<AuthorDto> getAuthors(){
-        List<Author> authors = authorService.findAll();
+        List<Author> authors = authorGate.findAllAuthor();
         List<AuthorDto> authorsDto = authors
                 .stream()
                 .map(AuthorDto::toDto)
@@ -29,20 +28,22 @@ public class AuthorRestController {
 
     @GetMapping("/api/authors/{id}")
     public AuthorDto getAuthor(@PathVariable(value = "id") Long id) {
-        AuthorDto authorDto = AuthorDto.toDto(authorService.findById(id));
+        Author author = authorGate.findAuthorById(id);
+        AuthorDto authorDto = AuthorDto.toDto(author);
         return authorDto;
     }
 
     @DeleteMapping("/authors/{id}")
     public void deleteAuthor(@PathVariable(value = "id") Long id) {
-        authorGate.process(MessageBuilder.withPayload(id).setHeader("customer","author_delete").build());
+        authorGate.deleteAuthorById(id);
+        //authorGate.process(MessageBuilder.withPayload(id).setHeader("customer","author_delete").build());
     }
 
     @PostMapping("/authors")
     public void saveAuthor(@RequestBody AuthorDto authorDto) {
         Author author = AuthorDto.toAuthor(authorDto);
-
-        authorGate.process(MessageBuilder.withPayload(author).setHeader("customer","author_save").build());
+        authorGate.saveAuthor(author);
+        //authorGate.process(MessageBuilder.withPayload(author).setHeader("customer","author_save").build());
     }
 
 }
